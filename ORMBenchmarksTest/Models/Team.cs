@@ -13,7 +13,7 @@ namespace ORMBenchmarksTest.Models
         {
             Players = new HashSet<Player>();
         }
-
+        [DatabaseGenerated(DatabaseGeneratedOption.None)]
         public int Id { get; set; }
 
         [Required]
@@ -21,7 +21,7 @@ namespace ORMBenchmarksTest.Models
         public string Name { get; set; }
 
         public DateTime FoundingDate { get; set; }
-
+        [Index]
         public int SportId { get; set; }
 
         public virtual ICollection<Player> Players { get; set; }

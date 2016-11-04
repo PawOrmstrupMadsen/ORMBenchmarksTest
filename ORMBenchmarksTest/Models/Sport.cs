@@ -13,7 +13,7 @@ namespace ORMBenchmarksTest.Models
         {
             Teams = new HashSet<Team>();
         }
-
+        [DatabaseGenerated(DatabaseGeneratedOption.None)]
         public int Id { get; set; }
 
         [StringLength(100)]

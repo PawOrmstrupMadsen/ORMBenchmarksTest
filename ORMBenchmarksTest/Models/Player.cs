@@ -9,6 +9,7 @@ namespace ORMBenchmarksTest.Models
     [Table("Player")]
     public partial class Player
     {
+        [DatabaseGenerated(DatabaseGeneratedOption.None)]
         public int Id { get; set; }
 
         [Required]
@@ -20,7 +21,7 @@ namespace ORMBenchmarksTest.Models
         public string LastName { get; set; }
 
         public DateTime DateOfBirth { get; set; }
-
+        [Index]
         public int TeamId { get; set; }
 
         public virtual Team Team { get; set; }
