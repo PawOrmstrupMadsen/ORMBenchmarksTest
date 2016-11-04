@@ -20,7 +20,7 @@ namespace ORMBenchmarksTest.DataAccess
                 watch.Start();
                 using (SportContext context = new SportContext())
                 {
-                    var player = context.Players.Find(id);
+                    var player = context.Players.FirstOrDefault(x => x.Id == id);
                 }
                 watch.Stop();
                 return watch.ElapsedMilliseconds;
