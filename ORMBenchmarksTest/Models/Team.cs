@@ -14,7 +14,6 @@ namespace ORMBenchmarksTest.Models
             Players = new HashSet<Player>();
         }
 
-        [DatabaseGenerated(DatabaseGeneratedOption.None)]
         public int Id { get; set; }
 
         [Required]

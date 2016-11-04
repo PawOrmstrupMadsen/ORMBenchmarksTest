@@ -9,7 +9,6 @@ namespace ORMBenchmarksTest.Models
     [Table("Player")]
     public partial class Player
     {
-        [DatabaseGenerated(DatabaseGeneratedOption.None)]
         public int Id { get; set; }
 
         [Required]
