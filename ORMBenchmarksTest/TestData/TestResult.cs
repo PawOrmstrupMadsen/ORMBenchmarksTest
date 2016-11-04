@@ -19,7 +19,10 @@ namespace ORMBenchmarksTest.TestData
     {
         ADONET,
         EntityFramework,
+        EntityFrameworkDTO,
         Dapper,
-        ADONetDr
+        ADONetDr,
+        EntityFrameworkAsync,
+        EntityFrameworkAsyncDTO,
     }
 }

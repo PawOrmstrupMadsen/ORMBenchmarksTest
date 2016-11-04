@@ -6,17 +6,38 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace ORMBenchmarksTest
 {
     class Program
     {
+        private static Task _workingTask;
+
         public static int NumPlayers { get; set; }
         public static int NumTeams { get; set; }
         public static int NumSports { get; set; }
         public static int NumRuns { get; set; }
         static void Main(string[] args)
+        {
+            MainAsync(args);
+            while (!_workingTask.IsCompleted)
+            {
+
+            }
+        }
+
+        private static async void MainAsync(string[] args)
+        {
+
+
+            _workingTask = DoWork();
+            await _workingTask;
+
+        }
+
+        static async Task DoWork()
         {
             char input;
             AutoMapperConfiguration.Configure();
@@ -66,17 +87,26 @@ namespace ORMBenchmarksTest
 
                         for (int i = 0; i < NumRuns; i++)
                         {
+                            EntityFrameworkAsyncDTO efTestAsyncDTO = new EntityFrameworkAsyncDTO();
+                            testResults.AddRange(await RunTests(i, Framework.EntityFrameworkAsyncDTO, efTestAsyncDTO));
+
+                            EntityFrameworkAsync efTestAsync = new EntityFrameworkAsync();
+                            testResults.AddRange(await RunTests(i, Framework.EntityFrameworkAsync, efTestAsync));
+
+                            EntityFrameworkDTO efTestDTO = new EntityFrameworkDTO();
+                            testResults.AddRange(await RunTests(i, Framework.EntityFrameworkDTO, efTestDTO));
+
                             EntityFramework efTest = new EntityFramework();
-                            testResults.AddRange(RunTests(i, Framework.EntityFramework, efTest));
+                            testResults.AddRange(await RunTests(i, Framework.EntityFramework, efTest));
 
                             ADONET adoTest = new ADONET();
-                            testResults.AddRange(RunTests(i, Framework.ADONET, adoTest));
+                            testResults.AddRange(await RunTests(i, Framework.ADONET, adoTest));
 
                             ADONetReader adoReaderTest = new ADONetReader();
-                            testResults.AddRange(RunTests(i, Framework.ADONetDr, adoReaderTest));
+                            testResults.AddRange(await RunTests(i, Framework.ADONetDr, adoReaderTest));
 
                             DataAccess.Dapper dapperTest = new DataAccess.Dapper();
-                            testResults.AddRange(RunTests(i, Framework.Dapper, dapperTest));
+                            testResults.AddRange(await RunTests(i, Framework.Dapper, dapperTest));
                         }
                         ProcessResults(testResults);
 
@@ -88,7 +118,7 @@ namespace ORMBenchmarksTest
         }
 
 
-        public static List<TestResult> RunTests(int runID, Framework framework, ITestSignature testSignature)
+        public static async Task<List<TestResult>> RunTests(int runID, Framework framework, ITestSignature testSignature)
         {
             List<TestResult> results = new List<TestResult>();
 
@@ -96,20 +126,20 @@ namespace ORMBenchmarksTest
             List<long> playerByIDResults = new List<long>();
             for (int i = 1; i <= NumPlayers; i++)
             {
-                playerByIDResults.Add(testSignature.GetPlayerByID(i));
+                playerByIDResults.Add(await testSignature.GetPlayerByID(i));
             }
             result.PlayerByIDMilliseconds = Math.Round(playerByIDResults.Average(), 2);
 
             List<long> playersForTeamResults = new List<long>();
             for (int i = 1; i <= NumTeams; i++)
             {
-                playersForTeamResults.Add(testSignature.GetPlayersForTeam(i));
+                playersForTeamResults.Add(await testSignature.GetPlayersForTeam(i));
             }
             result.PlayersForTeamMilliseconds = Math.Round(playersForTeamResults.Average(), 2);
             List<long> teamsForSportResults = new List<long>();
             for (int i = 1; i <= NumSports; i++)
             {
-                teamsForSportResults.Add(testSignature.GetTeamsForSport(i));
+                teamsForSportResults.Add(await testSignature.GetTeamsForSport(i));
             }
             result.TeamsForSportMilliseconds = Math.Round(teamsForSportResults.Average(), 2);
             results.Add(result);

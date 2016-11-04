@@ -10,54 +10,50 @@ using System.Data.Entity;
 
 namespace ORMBenchmarksTest.DataAccess
 {
-    public class EntityFramework : ITestSignature
+    public class EntityFrameworkAsync : ITestSignature
     {
         public async Task<long> GetPlayerByID(int id)
         {
-            return await Task.Run(() =>
-            {
+            
                 Stopwatch watch = new Stopwatch();
                 watch.Start();
                 using (SportContext context = new SportContext())
                 {
-                    var player = context.Players.Find(id);
+                    var player = await context.Players.FirstOrDefaultAsync(x => x.Id == id);
                 }
                 watch.Stop();
                 return watch.ElapsedMilliseconds;
-            });
+          
 
         }
 
         public async Task<long> GetPlayersForTeam(int teamId)
         {
-            return await Task.Run(() =>
-            {
+            
                 Stopwatch watch = new Stopwatch();
                 watch.Start();
                 using (SportContext context = new SportContext())
                 {
-                    var players = context.Players.AsNoTracking().Where(x => x.TeamId == teamId).ToList();
+                    var players = await context.Players.AsNoTracking().Where(x => x.TeamId == teamId).ToListAsync();
                 }
                 watch.Stop();
                 return watch.ElapsedMilliseconds;
-            });
+          
 
         }
 
         public async Task<long> GetTeamsForSport(int sportId)
         {
-            return await Task.Run(() =>
-            {
+           
                 Stopwatch watch = new Stopwatch();
                 watch.Start();
                 using (SportContext context = new SportContext())
                 {
-                    var players =
-                        context.Teams.AsNoTracking().Include(x => x.Players).Where(x => x.SportId == sportId).ToList();
+                    var players = await context.Teams.AsNoTracking().Include(x => x.Players).Where(x => x.SportId == sportId).ToListAsync();
                 }
                 watch.Stop();
                 return watch.ElapsedMilliseconds;
-            });
+           
 
         }
     }

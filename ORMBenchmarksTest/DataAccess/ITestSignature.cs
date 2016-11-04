@@ -8,8 +8,8 @@ namespace ORMBenchmarksTest.DataAccess
 {
     public interface ITestSignature
     {
-        long GetPlayerByID(int id);
-        long GetPlayersForTeam(int teamID);
-        long GetTeamsForSport(int sportID);
+        Task<long> GetPlayerByID(int id);
+        Task<long> GetPlayersForTeam(int teamID);
+        Task<long> GetTeamsForSport(int sportID);
     }
 }
