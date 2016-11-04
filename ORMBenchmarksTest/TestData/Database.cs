@@ -31,9 +31,11 @@ namespace ORMBenchmarksTest.TestData
         {
             using (SportContext context = new SportContext())
             {
+                var list = new List<Player>(players.Count);
+
                 foreach (var player in players)
                 {
-                    context.Players.Add(new Player()
+                    list.Add(new Player()
                     {
                         FirstName = player.FirstName,
                         LastName = player.LastName,
@@ -42,7 +44,7 @@ namespace ORMBenchmarksTest.TestData
                         Id = player.Id
                     });
                 }
-
+                context.Players.AddRange(list);
                 context.SaveChanges();
             }
         }
@@ -51,9 +53,10 @@ namespace ORMBenchmarksTest.TestData
         {
             using (SportContext context = new SportContext())
             {
+                var list = new List<Team>(teams.Count);
                 foreach (var team in teams)
                 {
-                    context.Teams.Add(new Team()
+                    list.Add(new Team()
                     {
                         Name = team.Name,
                         Id = team.Id,
@@ -61,7 +64,7 @@ namespace ORMBenchmarksTest.TestData
                         FoundingDate = team.FoundingDate
                     });
                 }
-
+                context.Teams.AddRange(list);
                 context.SaveChanges();
             }
         }
@@ -70,15 +73,16 @@ namespace ORMBenchmarksTest.TestData
         {
             using (SportContext context = new SportContext())
             {
+                var list = new List<Sport>(sports.Count);
                 foreach (var sport in sports)
                 {
-                    context.Sports.Add(new Sport()
+                    list.Add(new Sport()
                     {
                         Id = sport.Id,
                         Name = sport.Name
                     });
                 }
-
+                context.Sports.AddRange(list);
                 context.SaveChanges();
             }
         }
