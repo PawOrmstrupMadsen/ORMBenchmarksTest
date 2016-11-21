@@ -23,9 +23,7 @@ namespace ORMBenchmarksTest.DataAccess
                 {
                     conn.Open();
                     var player =
-                        conn.Query<PlayerDTO>(
-                            "SELECT Id, FirstName, LastName, DateOfBirth, TeamId FROM Player WHERE Id = @ID",
-                            new {ID = id});
+                        conn.Query<PlayerDTO>("SELECT Id, FirstName, LastName, DateOfBirth, TeamId FROM Player WHERE Id = @ID",new {ID = id});
                 }
                 watch.Stop();
                 return watch.ElapsedMilliseconds;
