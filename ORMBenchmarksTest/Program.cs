@@ -128,20 +128,20 @@ namespace ORMBenchmarksTest
             {
                 playerByIDResults.Add(await testSignature.GetPlayerByID(i));
             }
-            result.PlayerByIDMilliseconds = Math.Round(playerByIDResults.Average(), 2);
+            result.PlayerByIDMilliseconds = Math.Round(playerByIDResults.Average(), 4);
 
             List<long> playersForTeamResults = new List<long>();
             for (int i = 1; i <= NumTeams; i++)
             {
                 playersForTeamResults.Add(await testSignature.GetPlayersForTeam(i));
             }
-            result.PlayersForTeamMilliseconds = Math.Round(playersForTeamResults.Average(), 2);
+            result.PlayersForTeamMilliseconds = Math.Round(playersForTeamResults.Average(), 4);
             List<long> teamsForSportResults = new List<long>();
             for (int i = 1; i <= NumSports; i++)
             {
                 teamsForSportResults.Add(await testSignature.GetTeamsForSport(i));
             }
-            result.TeamsForSportMilliseconds = Math.Round(teamsForSportResults.Average(), 2);
+            result.TeamsForSportMilliseconds = Math.Round(teamsForSportResults.Average(), 4);
             results.Add(result);
 
             return results;
@@ -157,8 +157,9 @@ namespace ORMBenchmarksTest
                 var orderedResults = group.OrderBy(x=>x.Run);
                 foreach(var orderResult in orderedResults)
                 {
-                    Console.WriteLine(orderResult.Run.ToString() + "\t\t" + orderResult.PlayerByIDMilliseconds + "\t\t\t" + orderResult.PlayersForTeamMilliseconds + "\t\t\t" + orderResult.TeamsForSportMilliseconds);
+                    //Console.WriteLine(orderResult.Run.ToString() + "\t\t" + orderResult.PlayerByIDMilliseconds + "\t\t\t" + orderResult.PlayersForTeamMilliseconds + "\t\t\t" + orderResult.TeamsForSportMilliseconds);
                 }
+                Console.WriteLine("Total" + "\t\t" + orderedResults.Average(x => x.PlayerByIDMilliseconds) + "\t\t\t" + orderedResults.Average(x => x.PlayersForTeamMilliseconds) + "\t\t\t" + orderedResults.Average(x => x.TeamsForSportMilliseconds));
             }
         }
 

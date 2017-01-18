@@ -6,7 +6,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using System.Data.Entity;
+
 using System.Threading;
 
 namespace ORMBenchmarksTest.DataAccess

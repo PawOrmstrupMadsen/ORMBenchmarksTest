@@ -4,7 +4,7 @@ namespace ORMBenchmarksTest.Models
     using System.Collections.Generic;
     using System.ComponentModel.DataAnnotations;
     using System.ComponentModel.DataAnnotations.Schema;
-    using System.Data.Entity.Spatial;
+
 
     [Table("Team")]
     public partial class Team
@@ -21,7 +21,7 @@ namespace ORMBenchmarksTest.Models
         public string Name { get; set; }
 
         public DateTime FoundingDate { get; set; }
-        [Index]
+
         public int SportId { get; set; }
 
         public virtual ICollection<Player> Players { get; set; }

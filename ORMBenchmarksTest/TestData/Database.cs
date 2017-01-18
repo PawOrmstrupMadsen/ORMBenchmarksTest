@@ -1,6 +1,7 @@
 ﻿using ORMBenchmarksTest.DTOs;
 using ORMBenchmarksTest.Models;
 using System.Collections.Generic;
+using Microsoft.EntityFrameworkCore;
 
 namespace ORMBenchmarksTest.TestData
 {
@@ -10,9 +11,8 @@ namespace ORMBenchmarksTest.TestData
         {
             using(SportContext context = new SportContext())
             {
-                context.Database.ExecuteSqlCommand("DELETE FROM Player");
-                context.Database.ExecuteSqlCommand("DELETE FROM Team");
-                context.Database.ExecuteSqlCommand("DELETE FROM Sport");
+                context.Database.EnsureDeleted();
+                context.Database.EnsureCreated();
             }
         }
 
