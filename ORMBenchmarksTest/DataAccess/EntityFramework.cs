@@ -1,12 +1,8 @@
-﻿using ORMBenchmarksTest.DTOs;
+﻿using System.Data.Entity;
 using ORMBenchmarksTest.Models;
-using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
-using Microsoft.EntityFrameworkCore;
 
 
 namespace ORMBenchmarksTest.DataAccess
@@ -21,7 +17,11 @@ namespace ORMBenchmarksTest.DataAccess
                 watch.Start();
                 using (SportContext context = new SportContext())
                 {
-                    var player = context.Players.FirstOrDefault(x => x.Id == id);
+                    var player = context.Players
+                    .Include(x => x.Kids)
+                    .Include(x => x.Teams)
+                    .AsNoTracking()
+                    .FirstOrDefault(x => x.Id == id);
                 }
                 watch.Stop();
                 return watch.ElapsedMilliseconds;
@@ -37,7 +37,12 @@ namespace ORMBenchmarksTest.DataAccess
                 watch.Start();
                 using (SportContext context = new SportContext())
                 {
-                    var players = context.Players.AsNoTracking().Where(x => x.TeamId == teamId).ToList();
+                    var players = context.Teams.Where(x => x.Id == teamId)
+                        .SelectMany(x => x.Players)
+                        .Include(x => x.Kids)
+                        .Include(x => x.Teams)
+                        .AsNoTracking()
+                        .ToList();
                 }
                 watch.Stop();
                 return watch.ElapsedMilliseconds;
@@ -54,7 +59,10 @@ namespace ORMBenchmarksTest.DataAccess
                 using (SportContext context = new SportContext())
                 {
                     var players =
-                        context.Teams.AsNoTracking().Include(x => x.Players).Where(x => x.SportId == sportId).ToList();
+                        context.Teams
+                        .Include(x => x.Players.Select(y => y.Kids))
+                        .AsNoTracking()
+                        .Where(x => x.SportId == sportId).ToList();
                 }
                 watch.Stop();
                 return watch.ElapsedMilliseconds;

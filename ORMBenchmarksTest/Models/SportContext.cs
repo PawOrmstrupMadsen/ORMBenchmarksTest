@@ -1,42 +1,34 @@
-using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Metadata;
+
+
+using System.Data.Entity;
 
 namespace ORMBenchmarksTest.Models
 {
-    using System;
-
-    using System.ComponentModel.DataAnnotations.Schema;
-    using System.Linq;
 
     public class SportContext : DbContext
     {
-
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        public SportContext() : base("DefaultConnection")
         {
-            optionsBuilder.UseSqlServer(@"Data Source=localhost;Initial Catalog=EFPerfTest;Integrated Security=True;");
-
+            
         }
-
+        public virtual DbSet<Kid> Kids { get; set; }
         public virtual DbSet<Player> Players { get; set; }
         public virtual DbSet<Sport> Sports { get; set; }
         public virtual DbSet<Team> Teams { get; set; }
 
-        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<Sport>()
-                .ForSqlServerIsMemoryOptimized()
-                .HasMany(e => e.Teams)
-                .WithOne(e => e.Sport).OnDelete(DeleteBehavior.Restrict);
-
-
-            modelBuilder.Entity<Team>()
-                 .ForSqlServerIsMemoryOptimized()
-                .HasMany(e => e.Players)
-                .WithOne(e => e.Team).OnDelete(DeleteBehavior.Restrict);
-
             modelBuilder.Entity<Player>()
-                .ForSqlServerIsMemoryOptimized()
-                ;
+                .HasMany(e => e.Kids)
+                .WithRequired(e => e.Player).WillCascadeOnDelete();
+
+            modelBuilder.Entity<Sport>()
+                .HasMany(e => e.Teams)
+                .WithRequired(e => e.Sport).WillCascadeOnDelete();
+
+            modelBuilder.Entity<Team>().HasMany(e => e.Players).WithMany(e => e.Teams)
+                .Map(x => x.ToTable("TeamPlayers"));
+            
         }
     }
 }

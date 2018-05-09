@@ -24,5 +24,9 @@ namespace ORMBenchmarksTest.TestData
         ADONetDr,
         EntityFrameworkAsync,
         EntityFrameworkAsyncDTO,
+        EntityFrameworkCore,
+        EntityFrameworkCoreDTO,
+        EntityFrameworkCoreAsync,
+        EntityFrameworkCoreAsyncDTO,
     }
 }

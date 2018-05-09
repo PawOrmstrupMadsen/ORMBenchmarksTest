@@ -1,13 +1,8 @@
 ﻿using ORMBenchmarksTest.DTOs;
 using ORMBenchmarksTest.Models;
-using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
-
-using System.Threading;
 
 namespace ORMBenchmarksTest.DataAccess
 {
@@ -27,7 +22,17 @@ namespace ORMBenchmarksTest.DataAccess
                         FirstName = p.FirstName,
                         DateOfBirth = p.DateOfBirth,
                         LastName = p.LastName,
-                        TeamId = p.TeamId
+                      
+                        Kids = p.Kids.Select(k => new KidDTO()
+                        {
+                            PlayerId = p.Id,
+                            DateOfBirth = k.DateOfBirth,
+                            FirstName = k.FirstName,
+                            LastName = k.LastName,
+                            Id = k.Id
+
+
+                        }).ToList()
 
                     }).FirstOrDefault(x => x.Id == id);
                 }
@@ -45,13 +50,20 @@ namespace ORMBenchmarksTest.DataAccess
                 watch.Start();
                 using (SportContext context = new SportContext())
                 {
-                    var players = context.Players.Where(x => x.TeamId == teamId).Select(p => new PlayerDTO()
+                    var players = context.Teams.Where(x => x.Id == teamId).SelectMany(y => y.Players).Select(p => new PlayerDTO()
                     {
                         Id = p.Id,
                         FirstName = p.FirstName,
                         DateOfBirth = p.DateOfBirth,
                         LastName = p.LastName,
-                        TeamId = p.TeamId
+                        Kids = p.Kids.Select(k => new KidDTO()
+                        {
+                            PlayerId = p.Id,
+                            DateOfBirth = k.DateOfBirth,
+                            FirstName = k.FirstName,
+                            LastName = k.LastName,
+                            Id = k.Id
+                        }).ToList()
                     }).ToList();
                 }
                 watch.Stop();
@@ -81,7 +93,17 @@ namespace ORMBenchmarksTest.DataAccess
                                 FirstName = p.FirstName,
                                 DateOfBirth = p.DateOfBirth,
                                 LastName = p.LastName,
-                                TeamId = p.TeamId
+                               
+                                Kids = p.Kids.Select(k => new KidDTO()
+                                {
+                                    PlayerId = p.Id,
+                                    DateOfBirth = k.DateOfBirth,
+                                    FirstName = k.FirstName,
+                                    LastName = k.LastName,
+                                    Id = k.Id
+
+
+                                }).ToList()
                             }).ToList()
                         }).ToList();
                 }

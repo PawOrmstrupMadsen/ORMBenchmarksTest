@@ -12,6 +12,8 @@ namespace ORMBenchmarksTest.DTOs
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public DateTime DateOfBirth { get; set; }
-        public int TeamId { get; set; }
+        public ICollection<TeamDTO> Teams { get; set; } = new List<TeamDTO>();
+        public ICollection<KidDTO> Kids { get; set; } = new List<KidDTO>();
+
     }
 }

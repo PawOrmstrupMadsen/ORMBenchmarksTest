@@ -13,6 +13,7 @@ namespace ORMBenchmarksTest.Configuration
     {
         public static void Configure()
         {
+            Mapper.CreateMap<Kid, KidDTO>();
             Mapper.CreateMap<Player, PlayerDTO>();
             Mapper.CreateMap<Team, TeamDTO>();
             Mapper.CreateMap<Sport, SportDTO>();

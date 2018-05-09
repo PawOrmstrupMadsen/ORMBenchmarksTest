@@ -14,7 +14,7 @@ namespace ORMBenchmarksTest
     class Program
     {
         private static Task _workingTask;
-
+        public static int NumKids { get; set; }
         public static int NumPlayers { get; set; }
         public static int NumTeams { get; set; }
         public static int NumSports { get; set; }
@@ -67,46 +67,43 @@ namespace ORMBenchmarksTest
                         Console.WriteLine("# of Players per Team: ");
                         NumPlayers = int.Parse(Console.ReadLine());
 
+                        Console.WriteLine("# of kids per Player: ");
+                        NumKids = int.Parse(Console.ReadLine());
 
-                        List<SportDTO> sports = TestData.Generator.GenerateSports(NumSports);
+
+                        List<SportDTO> sports = Generator.GenerateSports(NumSports);
                         List<TeamDTO> teams = new List<TeamDTO>();
                         List<PlayerDTO> players = new List<PlayerDTO>();
+                        List<KidDTO> kids = new List<KidDTO>();
                         foreach (var sport in sports)
                         {
-                            var newTeams = TestData.Generator.GenerateTeams(sport.Id, NumTeams);
+                            var newTeams = Generator.GenerateTeams(sport.Id, NumTeams);
                             teams.AddRange(newTeams);
                             foreach (var team in newTeams)
                             {
-                                var newPlayers = TestData.Generator.GeneratePlayers(team.Id, NumPlayers);
+                                var newPlayers = Generator.GeneratePlayers(team.Id, NumPlayers);
                                 players.AddRange(newPlayers);
+                                foreach (var player in newPlayers)
+                                {
+                                    var newKids = Generator.GenerateKids(player.Id, NumKids);
+                                    kids.AddRange(newKids);
+                                }
                             }
                         }
 
                         Database.Reset();
-                        Database.Load(sports, teams, players);
+                        Database.Load(sports, teams, players, kids);
 
                         for (int i = 0; i < NumRuns; i++)
                         {
-                            EntityFrameworkAsyncDTO efTestAsyncDTO = new EntityFrameworkAsyncDTO();
-                            testResults.AddRange(await RunTests(i, Framework.EntityFrameworkAsyncDTO, efTestAsyncDTO));
 
-                            EntityFrameworkAsync efTestAsync = new EntityFrameworkAsync();
-                            testResults.AddRange(await RunTests(i, Framework.EntityFrameworkAsync, efTestAsync));
-
-                            EntityFrameworkDTO efTestDTO = new EntityFrameworkDTO();
-                            testResults.AddRange(await RunTests(i, Framework.EntityFrameworkDTO, efTestDTO));
+                            //EntityFrameworkDTO efTestDTO = new EntityFrameworkDTO();
+                            //testResults.AddRange(await RunTests(i, Framework.EntityFrameworkDTO, efTestDTO));
 
                             EntityFramework efTest = new EntityFramework();
                             testResults.AddRange(await RunTests(i, Framework.EntityFramework, efTest));
 
-                            ADONET adoTest = new ADONET();
-                            testResults.AddRange(await RunTests(i, Framework.ADONET, adoTest));
-
-                            ADONetReader adoReaderTest = new ADONetReader();
-                            testResults.AddRange(await RunTests(i, Framework.ADONetDr, adoReaderTest));
-
-                            DataAccess.Dapper dapperTest = new DataAccess.Dapper();
-                            testResults.AddRange(await RunTests(i, Framework.Dapper, dapperTest));
+                         
                         }
                         ProcessResults(testResults);
 
@@ -157,9 +154,9 @@ namespace ORMBenchmarksTest
                 var orderedResults = group.OrderBy(x=>x.Run);
                 foreach(var orderResult in orderedResults)
                 {
-                    //Console.WriteLine(orderResult.Run.ToString() + "\t\t" + orderResult.PlayerByIDMilliseconds + "\t\t\t" + orderResult.PlayersForTeamMilliseconds + "\t\t\t" + orderResult.TeamsForSportMilliseconds);
+                    Console.WriteLine(orderResult.Run.ToString() + "\t\t" + orderResult.PlayerByIDMilliseconds + "\t\t\t" + orderResult.PlayersForTeamMilliseconds + "\t\t\t" + orderResult.TeamsForSportMilliseconds);
                 }
-                Console.WriteLine("Total" + "\t\t" + orderedResults.Average(x => x.PlayerByIDMilliseconds) + "\t\t\t" + orderedResults.Average(x => x.PlayersForTeamMilliseconds) + "\t\t\t" + orderedResults.Average(x => x.TeamsForSportMilliseconds));
+                //Console.WriteLine($"Total\t\t{orderedResults.Average(x => x.PlayerByIDMilliseconds)} ms\t\t\t{orderedResults.Average(x => x.PlayersForTeamMilliseconds)} ms\t\t\t{orderedResults.Average(x => x.TeamsForSportMilliseconds)} ms");
             }
         }
 
